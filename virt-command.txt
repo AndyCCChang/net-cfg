@@ -1,0 +1,38 @@
+requirements
+	#apt install python2.7
+	#apt install libguestfs-tools
+
+
+virt-customize 
+	--root-password password:<password>
+	--hostname <hostname>
+	--copy-in "<from host>:<to client>" 
+	--firstboot-command "<command>" 
+	-a <volume>
+	
+or SYSTEM PATH
+
+example:
+
+virt-customize 
+	--root-password password:p161161P 
+	--hostname host161 
+	--copy-in "/dev/shm/osbuild/56-sv-1-vl-418/network.json:/root/" 
+	--copy-in "/opt/supermicro/osp-fast-deploy/lib/python2.7/site-packages/osp_fast_deploy/osbuild/net-cfg.py:/root/" 
+	--firstboot-command "python /root/net-cfg.py" 
+	-a /dev/disk/by-path/ip-10.2.0.3:3260-iscsi-iqn.1986-03.com.intel:provision:snapshot:56-sv-1-vl-418-lun-1"
+	
+	
+	
+virt-customize --root-password password:test2 --hostname host162 --copy-in "/root/FAST_DEPLOY/network.json:/root/" --copy-in "/root/FAST_DEPLOY/net-cfg.py:/root/" --firstboot-command "python /root/net-cfg.py" -a "/dev/nvmevg0/558a8a72-94ac-11ea-b5e0-db896d307b7a"
+
+virt-customize --root-password password:test2 --hostname host162 --copy-in "/root/FAST_DEPLOY/network.json:/root/" --copy-in "/root/FAST_DEPLOY/net-cfg.py:/root/" --firstboot-command "python /root/net-cfg.py" -a "/dev/nvmevg0/wz1"
+
+new:
+virt-customize --root-password password:test2 --hostname host162 --copy-in "/root/FAST_DEPLOY/network.json:/root/" --copy-in "/root/FAST_DEPLOY/net-cfg.py:/root/" --firstboot-command "python /root/net-cfg.py" -a "/dev/nvmepg0/d69909ce-b27d-11ea-a59d-53235df98871"
+
+hostname, password only:
+virt-customize --root-password password:test2 --hostname host162 -a "/dev/nvmepg0/d69909ce-b27d-11ea-a59d-53235df98871"
+
+
+virt-customize --root-password password:test2 --hostname host162 -a "/dev/nvmepg0/ea051274-b281-11ea-87a8-9b4cba5f0036"
