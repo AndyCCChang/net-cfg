@@ -2,7 +2,7 @@ import shlex,os,json,subprocess
 
 OS_RELEASE_PATH = "/etc/os-release"
 NETWORK_JSON_PATH = "/root/network.json"
-VERSION = 1.0
+VERSION = 1.1
 class OS_RELEASE:
     def __init__(self):
         self.vars = {}
@@ -77,12 +77,15 @@ class NET:
                 self.__iname = self.name()+'.'+self.cfg['vlan_id']
             elif self.cfg['type'] == 'bond':
                 self.__iname = self.name()
+            else:
+                self.__iname = self.name()
         return self.__iname
 
     def get_script(self):
         ret = ''
         cfg = self.cfg
         if cfg['type'] == 'eth':
+#        if 'eth' in self.name():
             ret += 'DEVICE='+self.name()+'\n'
             if cfg['mode'].lower().strip() == 'static':
                 ret += 'BOOTPROTO=none'+'\n'
@@ -108,6 +111,7 @@ class NET:
                     ret += 'METRIC '+cfg['metric']+'\n'                                    
             ret += 'ONBOOT=yes'+'\n'
         elif cfg['type'] == 'vlan':
+#        elif 'vlan' in self.name():
             ret += 'DEVICE='+self.name()+'.'+self.cfg['vlan_id']+'\n'
             if cfg['mode'].lower().strip() == 'static':
                 ret += 'BOOTPROTO=none'+'\n'
@@ -127,6 +131,7 @@ class NET:
             ret += 'ONBOOT=yes'+'\n'
             ret += 'VLAN=yes'+'\n'
         elif cfg['type'] == 'bond':
+#        elif 'bond' in self.name():
             ret += 'DEVICE='+self.name()+'\n'
             ret += 'TYPE=Bond'+'\n'
             ret += 'BONDING_MASTER=yes'+'\n'
@@ -152,7 +157,9 @@ class NET:
     def get_iface(self):
         ret = ''
         cfg = self.cfg
-        if cfg['type'] == 'eth':
+#        if cfg['type'] == 'eth':
+        if 'eth' in self.name():
+            self.cfg['type'] = 'eth'
             ret += 'auto '+self.name()+'\n'
             ret += 'iface '+self.name()+' inet '+cfg['mode']+'\n'
             if cfg.has_key('address'):
@@ -171,7 +178,9 @@ class NET:
                 ret += 'dns-nameserver '+cfg['dns3']+'\n'                                
             if cfg.has_key('bond-master'):
                 ret += 'bond-master '+cfg['bond-master']+'\n'                
-        elif cfg['type'] == 'vlan':
+#        elif cfg['type'] == 'vlan':
+        if 'vlan' in self.name():
+            self.cfg['type'] = 'vlan'
             ifname =self.name()+'.'+cfg['vlan_id']
             ret += 'auto '+ifname+'\n'
             ret += 'iface '+ifname+' inet '+cfg['mode']+'\n'
@@ -184,7 +193,9 @@ class NET:
             if cfg.has_key('metric'):
                 ret += 'metric '+cfg['metric']+'\n'                
             ret += 'vlan-raw-device '+self.name()+'\n'
-        elif cfg['type'] == 'bond':
+#        elif cfg['type'] == 'bond':
+        if 'bond' in self.name():
+            self.cfg['type'] = 'bond'
             ret += 'auto '+self.name()+'\n'
             ret += 'iface '+self.name()+' inet '+cfg['mode']+'\n'
             if cfg.has_key('address'):
@@ -202,6 +213,7 @@ class NET:
             if cfg.has_key('bond-slaves'):
                 ret += 'bond-slaves '+cfg['bond-slaves']+'\n'
         else:
+            self.cfg['type'] = 'eno'
             ret += 'auto '+self.name()+'\n'
             ret += 'iface '+self.name()+' inet '+cfg['mode']+'\n'
             if cfg.has_key('address'):

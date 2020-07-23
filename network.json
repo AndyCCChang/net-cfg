@@ -1,14 +1,1 @@
-{
-    "network": [
-        {
-            "address": "192.168.10.161",
-            "gateway": "192.168.10.1",
-            "dns2": "8.8.8.8",
-            "dns3": "8.8.4.4",
-            "mac": "00:0c:29:ff:f6:45",
-            "metric": "101",
-            "mode": "static",
-            "type": "ens"
-        }
-    ]
-}
+{"network":[{"address":"192.168.5.5","netmask":"255.255.255.0","gateway":"192.168.5.1","mac":"00:0c:29:ff:f6:45","mode":"static"}]}
