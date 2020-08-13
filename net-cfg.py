@@ -2,7 +2,7 @@ import shlex,os,json,subprocess
 
 OS_RELEASE_PATH = "/etc/os-release"
 NETWORK_JSON_PATH = "/root/network.json"
-VERSION = 1.11
+VERSION = 1.12
 class OS_RELEASE:
     def __init__(self):
         self.vars = {}
@@ -111,7 +111,7 @@ class NET:
                     ret += 'METRIC '+cfg['metric']+'\n'                                    
             ret += 'ONBOOT=yes'+'\n'
         elif cfg['type'] == 'vlan':
-#        elif 'vlan' in self.name():
+#        elif 'vlan' in cfg['type']:
             ret += 'DEVICE='+self.name()+'.'+self.cfg['vlan_id']+'\n'
             if cfg['mode'].lower().strip() == 'static':
                 ret += 'BOOTPROTO=none'+'\n'
@@ -157,7 +157,6 @@ class NET:
     def get_iface(self):
         ret = ''
         cfg = self.cfg
-#        if cfg['type'] == 'eth':
         if 'eth' in self.name():
             self.cfg['type'] = 'eth'
             ret += 'auto '+self.name()+'\n'
@@ -178,8 +177,7 @@ class NET:
                 ret += 'dns-nameserver '+cfg['dns3']+'\n'                                
             if cfg.has_key('bond-master'):
                 ret += 'bond-master '+cfg['bond-master']+'\n'                
-        elif cfg['type'] == 'vlan':
-#        if 'vlan' in self.name():
+        if 'vlan' in cfg['type']:
             self.cfg['type'] = 'vlan'
             ifname =self.name()+'.'+cfg['vlan_id']
             ret += 'auto '+ifname+'\n'
@@ -193,7 +191,6 @@ class NET:
             if cfg.has_key('metric'):
                 ret += 'metric '+cfg['metric']+'\n'                
             ret += 'vlan-raw-device '+self.name()+'\n'
-#        elif cfg['type'] == 'bond':
         if 'bond' in self.name():
             self.cfg['type'] = 'bond'
             ret += 'auto '+self.name()+'\n'
@@ -212,8 +209,7 @@ class NET:
                 ret += 'bond-miimon '+cfg['bond-miimon']+'\n'
             if cfg.has_key('bond-slaves'):
                 ret += 'bond-slaves '+cfg['bond-slaves']+'\n'
-        elif 'ens' in self.name() and cfg['type'] != 'vlan':
-            self.cfg['type'] = 'ens'
+        elif cfg['type'] != 'vlan':
             
             ret += 'auto '+self.name()+'\n'
             ret += 'iface '+self.name()+' inet '+cfg['mode']+'\n'
