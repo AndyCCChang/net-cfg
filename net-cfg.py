@@ -2,7 +2,7 @@ import shlex,os,json,subprocess
 
 OS_RELEASE_PATH = "/etc/os-release"
 NETWORK_JSON_PATH = "/root/network.json"
-VERSION = 1.1
+VERSION = 1.11
 class OS_RELEASE:
     def __init__(self):
         self.vars = {}
@@ -178,8 +178,8 @@ class NET:
                 ret += 'dns-nameserver '+cfg['dns3']+'\n'                                
             if cfg.has_key('bond-master'):
                 ret += 'bond-master '+cfg['bond-master']+'\n'                
-#        elif cfg['type'] == 'vlan':
-        if 'vlan' in self.name():
+        elif cfg['type'] == 'vlan':
+#        if 'vlan' in self.name():
             self.cfg['type'] = 'vlan'
             ifname =self.name()+'.'+cfg['vlan_id']
             ret += 'auto '+ifname+'\n'
@@ -212,8 +212,9 @@ class NET:
                 ret += 'bond-miimon '+cfg['bond-miimon']+'\n'
             if cfg.has_key('bond-slaves'):
                 ret += 'bond-slaves '+cfg['bond-slaves']+'\n'
-        else:
-            self.cfg['type'] = 'eno'
+        elif 'ens' in self.name() and cfg['type'] != 'vlan':
+            self.cfg['type'] = 'ens'
+            
             ret += 'auto '+self.name()+'\n'
             ret += 'iface '+self.name()+' inet '+cfg['mode']+'\n'
             if cfg.has_key('address'):
@@ -286,6 +287,8 @@ class NET_CFG:
             else:
                 return False
         except Exception as e:
+            print "error: " 
+            print e
             return False
         return True
     def toInterfaces(self):
