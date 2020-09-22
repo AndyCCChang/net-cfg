@@ -2,7 +2,7 @@ import shlex,os,json,subprocess
 
 OS_RELEASE_PATH = "/etc/os-release"
 NETWORK_JSON_PATH = "/root/network.json"
-VERSION = 1.12
+VERSION = 1.13
 class OS_RELEASE:
     def __init__(self):
         self.vars = {}
@@ -266,6 +266,8 @@ class NET_CFG:
         if self.osr.isUbuntu():
             os.system('modprobe 8021q')
             for intf in intfs:
+                #flush the original ip in dev
+                self.flush_dev(intf)
                 os.system('ifdown '+intf)
                 os.system('ifup '+intf)
         elif self.osr.isRedhat():
@@ -317,6 +319,9 @@ class NET_CFG:
 
     def show(self):
         return
+    def flush_dev(self, if_name):
+        flush_ipaddr = 'ip addr flush dev ' + if_name + ' ;'
+        os.system(flush_ipaddr);
 
 def get_iface_name(mac):
     cmd = shlex.split('find /sys/class/net -mindepth 1 -maxdepth 1 ! -name lo -printf "%P= " -execdir cat {}/address \;')
