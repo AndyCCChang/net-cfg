@@ -3,7 +3,7 @@ import shlex,os,json,subprocess
 OS_RELEASE_PATH = "/etc/os-release"
 NETWORK_JSON_PATH = "/root/network.json"
 RESOLV_BASE= "/etc/resolvconf/resolv.conf.d/base"
-VERSION = 1.14a
+VERSION = 1.15
 
 class OS_RELEASE:
     def __init__(self):
