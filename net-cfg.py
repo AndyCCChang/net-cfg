@@ -2,7 +2,9 @@ import shlex,os,json,subprocess
 
 OS_RELEASE_PATH = "/etc/os-release"
 NETWORK_JSON_PATH = "/root/network.json"
-VERSION = 1.13
+RESOLV_BASE= "/etc/resolvconf/resolv.conf.d/base"
+VERSION = 1.14a
+
 class OS_RELEASE:
     def __init__(self):
         self.vars = {}
@@ -51,6 +53,15 @@ class NET:
         self.__iname = ''
 
         return
+    def write_dns(self, dns):
+        is_file = os.path.isfile(RESOLV_BASE)
+        if not is_file:
+            os.system('mkdir -p '+ RESOLV_BASE)
+        with open(RESOLV_BASE, "wb") as outf:
+            outf.write('nameserver ' + dns + '\n')
+        os.system('resolvconf -u')
+
+
     def filename(self):
         if self.name() == '':
             return ''
@@ -170,11 +181,14 @@ class NET:
             if cfg.has_key('metric'):
                 ret += 'metric '+cfg['metric']+'\n'                
             if cfg.has_key('dns1'):
-                ret += 'dns-nameserver '+cfg['dns1']+'\n'                
+                ret += 'dns-nameservers '+cfg['dns1']+'\n'
+                self.write_dns(cfg['dns1']);                
             if cfg.has_key('dns2'):
-                ret += 'dns-nameserver '+cfg['dns2']+'\n'                
+                ret += 'dns-nameservers '+cfg['dns2']+'\n'
+                self.write_dns(cfg['dns2']);            
             if cfg.has_key('dns3'):
-                ret += 'dns-nameserver '+cfg['dns3']+'\n'                                
+                ret += 'dns-nameservers '+cfg['dns3']+'\n'                                
+                self.write_dns(cfg['dns3']);
             if cfg.has_key('bond-master'):
                 ret += 'bond-master '+cfg['bond-master']+'\n'                
         if 'vlan' in cfg['type']:
@@ -222,11 +236,14 @@ class NET:
             if cfg.has_key('metric'):
                 ret += 'metric '+cfg['metric']+'\n'
             if cfg.has_key('dns1'):
-                ret += 'dns-nameserver '+cfg['dns1']+'\n'
+                ret += 'dns-nameservers '+cfg['dns1']+'\n'
+                self.write_dns(cfg['dns1']);
             if cfg.has_key('dns2'):
-                ret += 'dns-nameserver '+cfg['dns2']+'\n'
+                ret += 'dns-nameservers '+cfg['dns2']+'\n'
+                self.write_dns(cfg['dns2']);
             if cfg.has_key('dns3'):
-                ret += 'dns-nameserver '+cfg['dns3']+'\n'
+                ret += 'dns-nameservers '+cfg['dns3']+'\n'
+                self.write_dns(cfg['dns3']);
             if cfg.has_key('bond-master'):
                 ret += 'bond-master '+cfg['bond-master']+'\n'
 
