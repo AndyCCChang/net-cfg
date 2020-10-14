@@ -57,7 +57,7 @@ class NET:
         is_file = os.path.isfile(RESOLV_BASE)
         if not is_file:
             os.system('mkdir -p '+ RESOLV_BASE)
-        with open(RESOLV_BASE, "wb") as outf:
+        with open(RESOLV_BASE, "a+") as outf:
             outf.write('nameserver ' + dns + '\n')
         os.system('resolvconf -u')
 
