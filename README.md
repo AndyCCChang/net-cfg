@@ -1,4 +1,4 @@
-# net-cfg
+# net-cfg V1.17
 Configure network configuration for Unix system
 
 How to use:
@@ -20,3 +20,31 @@ e.g.,
     ]
 }
 
+
+Centos version:
+to set up a VLAN configuration, i.e., 
+ens192 mac: 00:0c:29:07:f3:fa
+/etc/sysconfig/network-scripts/ifcfg-ens192.1234
+DEVICE=ens192.1234
+BOOTPROTO=none
+IPADDR=192.168.5.5
+NETMASK=255.255.255.0
+GATEWAY 192.168.5.1
+USERCTL=no
+ONBOOT=yes
+VLAN=yes
+
+The network.json required
+{
+  "network": [
+    {
+      "address": "192.168.5.5",
+      "netmask": "255.255.255.0",
+      "gateway": "192.168.5.1",
+      "mac": "00:0c:29:07:f3:fa",
+      "mode": "static",
+      "type": "vlan",
+      "vlan_id": "1234"
+    }
+  ]
+}
