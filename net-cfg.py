@@ -3,7 +3,7 @@ import shlex,os,json,subprocess
 OS_RELEASE_PATH = "/etc/os-release"
 NETWORK_JSON_PATH = "/root/network.json"
 RESOLV_BASE= "/etc/resolvconf/resolv.conf.d/base"
-VERSION = 1.17
+VERSION = 1.18
 
 class OS_RELEASE:
     def __init__(self):
@@ -95,8 +95,8 @@ class NET:
     def get_script(self):
         ret = ''
         cfg = self.cfg
-        if cfg['type'] == 'eth':
-#        if 'eth' in self.name():
+#        if cfg['type'] == 'eth':
+        if 'eth' in self.name():
             ret += 'DEVICE='+self.name()+'\n'
             if cfg['mode'].lower().strip() == 'static':
                 ret += 'BOOTPROTO=none'+'\n'
@@ -105,15 +105,15 @@ class NET:
                 if cfg.has_key('netmask'):
                     ret += 'NETMASK='+cfg['netmask']+'\n'
                 if cfg.has_key('gateway'):
-                    ret += 'GATEWAY '+cfg['gateway']+'\n'                    
+                    ret += 'GATEWAY='+cfg['gateway']+'\n'                    
                 if cfg.has_key('metric'):
                     ret += 'METRIC '+cfg['metric']+'\n'                                    
                 if cfg.has_key('dns1'):
-                    ret += 'DNS1 '+cfg['dns1']+'\n'                
+                    ret += 'DNS1='+cfg['dns1']+'\n'                
                 if cfg.has_key('dns2'):
-                    ret += 'DNS2 '+cfg['dns2']+'\n'                
+                    ret += 'DNS2='+cfg['dns2']+'\n'                
                 if cfg.has_key('dns3'):
-                    ret += 'DNS3 '+cfg['dns3']+'\n'                                
+                    ret += 'DNS3='+cfg['dns3']+'\n'                                
                     
                 ret += 'USERCTL=no'+'\n'
             elif cfg['mode'].lower().strip() == 'dhcp':
@@ -131,7 +131,7 @@ class NET:
                 if cfg.has_key('netmask'):
                     ret += 'NETMASK='+cfg['netmask']+'\n'
                 if cfg.has_key('gateway'):
-                    ret += 'GATEWAY '+cfg['gateway']+'\n'                    
+                    ret += 'GATEWAY='+cfg['gateway']+'\n'                    
                 if cfg.has_key('metric'):
                     ret += 'METRIC '+cfg['metric']+'\n'                                    
                 ret += 'USERCTL=no'+'\n'
@@ -153,7 +153,7 @@ class NET:
                 if cfg.has_key('netmask'):
                     ret += 'NETMASK='+cfg['netmask']+'\n'
                 if cfg.has_key('gateway'):
-                    ret += 'GATEWAY '+cfg['gateway']+'\n'                    
+                    ret += 'GATEWAY='+cfg['gateway']+'\n'                    
                 if cfg.has_key('metric'):
                     ret += 'METRIC '+cfg['metric']+'\n'                                    
                 ret += 'USERCTL=no'+'\n'
@@ -164,7 +164,9 @@ class NET:
             ret += 'ONBOOT=yes'+'\n'
             ret += 'BONDING_OPTS=""'+'\n'
             ret += 'NM_CONTROLLED="no"'+'\n'
-        elif cfg['type'] == 'ens':
+        elif 'ens' in self.name():
+# TODO enpsxxx
+#        elif cfg['type'] == 'ens':
             ret += 'DEVICE='+self.name()+'\n'
             if cfg['mode'].lower().strip() == 'static':
                 ret += 'BOOTPROTO=none'+'\n'
@@ -173,15 +175,15 @@ class NET:
                 if cfg.has_key('netmask'):
                     ret += 'NETMASK='+cfg['netmask']+'\n'
                 if cfg.has_key('gateway'):
-                    ret += 'GATEWAY '+cfg['gateway']+'\n'
+                    ret += 'GATEWAY='+cfg['gateway']+'\n'
                 if cfg.has_key('metric'):
                     ret += 'METRIC '+cfg['metric']+'\n'
                 if cfg.has_key('dns1'):
-                    ret += 'DNS1 '+cfg['dns1']+'\n'
+                    ret += 'DNS1='+cfg['dns1']+'\n'
                 if cfg.has_key('dns2'):
-                    ret += 'DNS2 '+cfg['dns2']+'\n'
+                    ret += 'DNS2='+cfg['dns2']+'\n'
                 if cfg.has_key('dns3'):
-                    ret += 'DNS3 '+cfg['dns3']+'\n'
+                    ret += 'DNS3='+cfg['dns3']+'\n'
 
                 ret += 'USERCTL=no'+'\n'
         return ret

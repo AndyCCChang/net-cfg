@@ -1,3 +1,7 @@
+# net-cfg V1.18
+1. Fix centos network script bugs for /etc/sysconfig/network-scripts/
+   a. Correct GATEWAY script
+   a. Correct DNS script
 # net-cfg V1.17
 Configure network configuration for Unix system
 
